@@ -1,5 +1,5 @@
 /* ==========================================
-   CLASSE SUDOKU - LÓGICA DO JOGO (VERSÃO CORRIGIDA)
+   CLASSE SUDOKU - LÓGICA DO JOGO
    ========================================== */
 
 class Sudoku {
@@ -55,16 +55,27 @@ class Sudoku {
                 const val = btn.getAttribute('data-val');
                 if (!val) return;
 
-                const { row, col } = this.selectedCell;
-                const input = (row !== null && col !== null)
-                    ? document.getElementById(`cell-${row}-${col}`)
-                    : null;
-
-                if (val === 'clear' || val === 'back') {
-                    if (!this.gameActive || !input || input.disabled) return;
-                    input.value = '';
-                    this.onCellChange(row, col);
+                if (val === 'clear') {
+                    // limpar célula selecionada
+                    const { row, col } = this.selectedCell;
+                    if (row !== null && col !== null) {
+                        const input = document.getElementById(`cell-${row}-${col}`);
+                        if (input && !input.disabled) {
+                            input.value = '';
+                            this.onCellChange(row, col);
+                        }
+                    }
+                } else if (val === 'back') {
+                    const { row, col } = this.selectedCell;
+                    if (row !== null && col !== null) {
+                        const input = document.getElementById(`cell-${row}-${col}`);
+                        if (input && !input.disabled) {
+                            input.value = '';
+                            this.onCellChange(row, col);
+                        }
+                    }
                 } else {
+                    // número normal
                     const num = parseInt(val, 10);
                     this.onNumberClick(num);
                 }
@@ -110,7 +121,7 @@ class Sudoku {
         // Atualizar painel de números (marca completados)
         this.updateNumbersPanel();
         
-        // Tentar restaurar progresso salvo para esse puzzle (se existir)
+        // Tentar restaurar progresso salvo para esse puzzle
         this.attemptRestoreProgress();
         
         // Atualizar UI
@@ -158,16 +169,23 @@ class Sudoku {
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 if (board[row][col] === 0) {
+                    // Obter números que podem ser colocados
                     const validNumbers = this.getValidNumbers(board, row, col);
+                    
+                    // Embaralhar números
                     this.shuffle(validNumbers);
                     
+                    // Tentar colocar cada número
                     for (const num of validNumbers) {
                         board[row][col] = num;
+                        
                         if (this.fillBoard(board)) {
                             return true;
                         }
+                        
                         board[row][col] = 0;
                     }
+                    
                     return false;
                 }
             }
@@ -180,34 +198,40 @@ class Sudoku {
      */
     getValidNumbers(board, row, col) {
         const validNumbers = [];
+        
         for (let num = 1; num <= 9; num++) {
             if (this.isValidPlacement(board, row, col, num)) {
                 validNumbers.push(num);
             }
         }
+        
         return validNumbers;
     }
 
     /**
-     * Validar se um número pode ser colocado em uma posição (geração)
+     * Validar se um número pode ser colocado em uma posição
      */
     isValidPlacement(board, row, col, num) {
         // Verificar linha
         for (let i = 0; i < 9; i++) {
             if (board[row][i] === num) return false;
         }
+        
         // Verificar coluna
         for (let i = 0; i < 9; i++) {
             if (board[i][col] === num) return false;
         }
+        
         // Verificar bloco 3x3
         const blockRow = Math.floor(row / 3) * 3;
         const blockCol = Math.floor(col / 3) * 3;
+        
         for (let i = blockRow; i < blockRow + 3; i++) {
             for (let j = blockCol; j < blockCol + 3; j++) {
                 if (board[i][j] === num) return false;
             }
         }
+        
         return true;
     }
 
@@ -220,6 +244,7 @@ class Sudoku {
             medium: 50,
             hard: 60
         };
+        
         return difficultyMap[difficulty] || 40;
     }
 
@@ -228,9 +253,11 @@ class Sudoku {
      */
     removeNumbers(count) {
         let removed = 0;
+        
         while (removed < count) {
             const row = Math.floor(Math.random() * 9);
             const col = Math.floor(Math.random() * 9);
+            
             if (this.puzzleBoard[row][col] !== 0) {
                 this.puzzleBoard[row][col] = 0;
                 removed++;
@@ -250,12 +277,14 @@ class Sudoku {
                 cell.className = 'sudoku-cell';
                 
                 const input = document.createElement('input');
+                // usar text + inputmode para evitar spinners e ter controle total
                 input.type = 'text';
                 input.inputMode = 'numeric';
                 input.pattern = '[1-9]';
                 input.maxLength = 1;
                 input.id = `cell-${row}-${col}`;
                 
+                // Se célula tem número pré-preenchido (inicial)
                 if (this.initialBoard[row][col] !== 0) {
                     input.value = this.initialBoard[row][col];
                     cell.classList.add('locked');
@@ -264,6 +293,7 @@ class Sudoku {
                     input.value = '';
                 }
                 
+                // Event listeners para validação e entrada imediata
                 input.addEventListener('input', () => {
                     this.onCellChange(row, col);
                 });
@@ -272,11 +302,13 @@ class Sudoku {
                     this.selectedCell.row = row;
                     this.selectedCell.col = col;
                     this.onCellFocus(row, col);
+                    // Mostrar numpad em dispositivos touch/small
                     if (this.isMobile()) {
                         this.showNumpad();
                     }
                 });
 
+                // Prevenir colar de conteúdo inválido
                 input.addEventListener('paste', (e) => {
                     const pasted = (e.clipboardData || window.clipboardData).getData('text');
                     if (!/^[1-9]$/.test(pasted.trim())) {
@@ -284,12 +316,12 @@ class Sudoku {
                     }
                 });
 
+                // Permitir limpar com Backspace/Delete
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Backspace' || e.key === 'Delete') {
-                        if (!this.gameActive) return;
+                        // limpar valor e atualizar painel
                         input.value = '';
                         this.updateNumbersPanel();
-                        this.saveProgress();
                     }
                 });
                 
@@ -304,13 +336,17 @@ class Sudoku {
      */
     renderNumbersPanel() {
         this.numbersPanel.innerHTML = '';
+        
         for (let num = 1; num <= 9; num++) {
             const numberBtn = document.createElement('div');
             numberBtn.className = 'number-item';
             numberBtn.textContent = num;
             numberBtn.id = `number-${num}`;
             numberBtn.setAttribute('data-number', num);
+            
+            // Ao clicar no número, inserir na célula selecionada
             numberBtn.addEventListener('click', () => this.onNumberClick(num));
+
             this.numbersPanel.appendChild(numberBtn);
         }
     }
@@ -319,60 +355,40 @@ class Sudoku {
      * Inserir número clicado no painel na célula atualmente selecionada
      */
     onNumberClick(num) {
-        if (!this.gameActive) return;
-
         const { row, col } = this.selectedCell;
-        if (row === null || col === null) return;
+        if (row === null || col === null) return; // sem célula selecionada
 
         const input = document.getElementById(`cell-${row}-${col}`);
         if (!input || input.disabled) return;
 
+        // Simular entrada e validar
         input.value = String(num);
         this.onCellChange(row, col);
         input.focus();
     }
 
     /**
-     * Atualizar painel de números (marcar completados com base nos números CORRETOS)
+     * Atualizar painel de números (desabilitar os completados)
      */
     updateNumbersPanel() {
         for (let num = 1; num <= 9; num++) {
             const numberBtn = document.getElementById(`number-${num}`);
-            if (!numberBtn) continue;
-            const count = this.countCorrectNumberInBoard(num);
+            const count = this.countNumberInBoard(num);
             
             if (count >= 9) {
                 numberBtn.classList.add('completed');
                 this.completedNumbers.add(num);
             } else {
                 numberBtn.classList.remove('completed');
-                this.completedNumbers.delete(num);
             }
         }
-    }
-
-    /**
-     * Contar quantas vezes um número aparece CORRETAMENTE no tabuleiro
-     */
-    countCorrectNumberInBoard(num) {
-        let count = 0;
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-                const input = document.getElementById(`cell-${row}-${col}`);
-                if (!input || !input.value) continue;
-                const val = parseInt(input.value, 10);
-                if (val === num && this.solvedBoard[row][col] === num) {
-                    count++;
-                }
-            }
-        }
-        return count;
     }
 
     /**
      * Gerar uma chave simples para o puzzle baseado nos números iniciais
      */
     getPuzzleKey() {
+        // chave simples: concatenação das linhas iniciais
         return this.initialBoard.map(r => r.join('')).join('|');
     }
 
@@ -380,7 +396,6 @@ class Sudoku {
      * Salvar progresso atual no localStorage (por puzzle)
      */
     saveProgress() {
-        if (!this.gameActive) return;
         try {
             const key = 'sudoku-progress-' + this.getPuzzleKey();
             const state = {
@@ -397,19 +412,8 @@ class Sudoku {
             }
             localStorage.setItem(key, JSON.stringify(state));
         } catch (e) {
+            // falhar silenciosamente
             console.warn('Falha ao salvar progresso:', e);
-        }
-    }
-
-    /**
-     * Limpar progresso salvo para o puzzle atual
-     */
-    clearProgress() {
-        try {
-            const key = 'sudoku-progress-' + this.getPuzzleKey();
-            localStorage.removeItem(key);
-        } catch (e) {
-            console.warn('Falha ao limpar progresso:', e);
         }
     }
 
@@ -422,18 +426,15 @@ class Sudoku {
             const raw = localStorage.getItem(key);
             if (!raw) return false;
             const state = JSON.parse(raw);
-
+            // aplicar valores
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
                     const input = document.getElementById(`cell-${row}-${col}`);
                     if (input && !input.disabled) {
-                        input.value = state.values && state.values[row]
-                            ? state.values[row][col] || ''
-                            : '';
+                        input.value = state.values && state.values[row] ? state.values[row][col] || '' : '';
                     }
                 }
             }
-
             this.timeElapsed = state.timeElapsed || 0;
             this.errorCount = state.errorCount || 0;
             this.updateUI();
@@ -481,29 +482,44 @@ class Sudoku {
     }
 
     /**
+     * Contar quantas vezes um número aparece no tabuleiro
+     */
+    countNumberInBoard(num) {
+        let count = 0;
+        
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const input = document.getElementById(`cell-${row}-${col}`);
+                if (input.value && parseInt(input.value) === num) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+
+    /**
      * Handler para mudança de célula
      */
     onCellChange(row, col) {
         const input = document.getElementById(`cell-${row}-${col}`);
-        if (!input) return;
-
-        if (!this.gameActive || input.disabled) {
-            return;
-        }
-
-        let value = input.value.trim();
+        const value = input.value ? parseInt(input.value) : 0;
+        
+        // Remover classes anteriores
         const cell = input.parentElement;
         cell.classList.remove('error', 'valid', 'highlight');
-
-        if (value === '') {
+        
+        // Se célula está vazia, apenas retornar
+        if (value === 0 || value === '') {
             input.value = '';
             this.updateNumbersPanel();
             this.saveProgress();
             return;
         }
-
-        const num = parseInt(value, 10);
-        if (isNaN(num) || num < 1 || num > 9) {
+        
+        // Validar número
+        if (value < 1 || value > 9 || isNaN(value)) {
             cell.classList.add('error');
             this.increaseErrorCount();
             setTimeout(() => {
@@ -514,9 +530,9 @@ class Sudoku {
             }, 500);
             return;
         }
-
-        // Validação contra a solução real
-        if (!this.isValidNumber(row, col, num)) {
+        
+        // Verificar se número é válido para essa posição
+        if (!this.isValidNumber(row, col, value)) {
             cell.classList.add('error');
             this.increaseErrorCount();
             setTimeout(() => {
@@ -527,49 +543,54 @@ class Sudoku {
             }, 500);
             return;
         }
-
-        // Número correto
+        
+        // Número válido
         cell.classList.add('valid');
+        
+        // Atualizar painel de números
         this.updateNumbersPanel();
         this.saveProgress();
-
+        
+        // Verificar se jogo foi vencido
         if (this.checkWin()) {
             this.gameActive = false;
             clearInterval(this.timerInterval);
-            this.disableBoardInputs();
-            this.hideNumpad();
             this.showMessage('🎉 Parabéns! Você resolveu o Sudoku!', 'success');
         }
     }
 
     /**
-     * Handler para foco em célula (realça linha/coluna/bloco)
+     * Handler para foco em célula
      */
     onCellFocus(row, col) {
+        // Remover highlight anterior
         document.querySelectorAll('.sudoku-cell.highlight').forEach(cell => {
             cell.classList.remove('highlight');
         });
         
-        const current = document.getElementById(`cell-${row}-${col}`);
-        if (!current) return;
-
-        current.parentElement.classList.add('highlight');
+        // Destacar célula atual
+        document.getElementById(`cell-${row}-${col}`).parentElement.classList.add('highlight');
         
+        // Destacar outras células na mesma linha, coluna e bloco
         for (let i = 0; i < 9; i++) {
+            // Linha
             if (i !== col) {
                 document.getElementById(`cell-${row}-${i}`).parentElement.classList.add('highlight');
             }
+            
+            // Coluna
             if (i !== row) {
                 document.getElementById(`cell-${i}-${col}`).parentElement.classList.add('highlight');
             }
         }
         
+        // Bloco 3x3
         const blockRow = Math.floor(row / 3) * 3;
         const blockCol = Math.floor(col / 3) * 3;
         
         for (let i = blockRow; i < blockRow + 3; i++) {
             for (let j = blockCol; j < blockCol + 3; j++) {
-                if (!(i === row && j === col)) {
+                if (i !== row || j !== col) {
                     document.getElementById(`cell-${i}-${j}`).parentElement.classList.add('highlight');
                 }
             }
@@ -577,50 +598,121 @@ class Sudoku {
     }
 
     /**
-     * Validar se um número é válido para uma posição (contra a solução)
+     * Validar se um número é válido para uma posição
      */
     isValidNumber(row, col, num) {
-        return this.solvedBoard[row][col] === num;
+        // Verificar linha
+        for (let i = 0; i < 9; i++) {
+            if (i !== col) {
+                const input = document.getElementById(`cell-${row}-${i}`);
+                if (input.value && parseInt(input.value) === num) {
+                    return false;
+                }
+            }
+        }
+        
+        // Verificar coluna
+        for (let i = 0; i < 9; i++) {
+            if (i !== row) {
+                const input = document.getElementById(`cell-${i}-${col}`);
+                if (input.value && parseInt(input.value) === num) {
+                    return false;
+                }
+            }
+        }
+        
+        // Verificar bloco 3x3
+        const blockRow = Math.floor(row / 3) * 3;
+        const blockCol = Math.floor(col / 3) * 3;
+        
+        for (let i = blockRow; i < blockRow + 3; i++) {
+            for (let j = blockCol; j < blockCol + 3; j++) {
+                if ((i !== row || j !== col)) {
+                    const input = document.getElementById(`cell-${i}-${j}`);
+                    if (input.value && parseInt(input.value) === num) {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        return true;
     }
 
     /**
-     * Verificar se o jogo foi vencido (todas as células iguais à solução)
+     * Verificar se o jogo foi vencido
      */
     checkWin() {
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 const input = document.getElementById(`cell-${row}-${col}`);
-                const value = input && input.value ? parseInt(input.value, 10) : 0;
-                if (!value || value !== this.solvedBoard[row][col]) {
+                const value = input.value ? parseInt(input.value) : 0;
+                
+                // Se célula está vazia
+                if (value === 0) return false;
+                
+                // Verificar validade do número
+                if (!this.isValidNumberFinal(row, col, value)) {
                     return false;
                 }
             }
         }
+        
         return true;
     }
 
     /**
-     * Desabilitar todas as células editáveis
+     * Validar número final (verificação mais rigorosa)
      */
-    disableBoardInputs() {
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-                const input = document.getElementById(`cell-${row}-${col}`);
-                if (input && !input.disabled) {
-                    input.disabled = true;
+    isValidNumberFinal(row, col, num) {
+        // Verificar linha
+        for (let i = 0; i < 9; i++) {
+            if (i !== col) {
+                const input = document.getElementById(`cell-${row}-${i}`);
+                if (input.value && parseInt(input.value) === num) {
+                    return false;
                 }
             }
         }
+        
+        // Verificar coluna
+        for (let i = 0; i < 9; i++) {
+            if (i !== row) {
+                const input = document.getElementById(`cell-${i}-${col}`);
+                if (input.value && parseInt(input.value) === num) {
+                    return false;
+                }
+            }
+        }
+        
+        // Verificar bloco 3x3
+        const blockRow = Math.floor(row / 3) * 3;
+        const blockCol = Math.floor(col / 3) * 3;
+        
+        for (let i = blockRow; i < blockRow + 3; i++) {
+            for (let j = blockCol; j < blockCol + 3; j++) {
+                if ((i !== row || j !== col)) {
+                    const input = document.getElementById(`cell-${i}-${j}`);
+                    if (input.value && parseInt(input.value) === num) {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        return true;
     }
 
     /**
      * Resolver o tabuleiro
      */
     solve() {
+        // Preencher todas as células com a solução
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 const input = document.getElementById(`cell-${row}-${col}`);
-                if (!input) continue;
+                
+                // Se célula não está bloqueada
                 if (!input.disabled) {
                     input.value = this.solvedBoard[row][col];
                     input.parentElement.classList.add('valid');
@@ -632,37 +724,26 @@ class Sudoku {
         clearInterval(this.timerInterval);
         this.updateNumbersPanel();
         this.saveProgress();
-        this.disableBoardInputs();
-        this.hideNumpad();
         this.showMessage('Tabuleiro resolvido!', 'warning');
     }
 
     /**
-     * Reiniciar o jogo (mesmo puzzle, zerando tempo e erros)
+     * Reiniciar o jogo (limpar preenchimentos)
      */
     reset() {
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 const input = document.getElementById(`cell-${row}-${col}`);
-                if (!input) continue;
+                
+                // Se célula não está bloqueada, limpar
                 if (!input.disabled) {
                     input.value = '';
-                    input.disabled = false;
+                    input.parentElement.classList.remove('error', 'valid', 'highlight');
                 }
-                input.parentElement.classList.remove('error', 'valid', 'highlight');
             }
         }
-
-        this.errorCount = 0;
-        this.timeElapsed = 0;
-        this.gameActive = true;
-        this.completedNumbers.clear();
-        clearInterval(this.timerInterval);
-        this.clearProgress();
-        this.updateUI();
-        this.updateNumbersPanel();
-        this.startTimer();
         
+        this.updateNumbersPanel();
         this.showMessage('Tabuleiro reiniciado!', 'warning');
     }
 
@@ -683,8 +764,6 @@ class Sudoku {
         if (this.errorCount >= this.maxErrors) {
             this.gameActive = false;
             clearInterval(this.timerInterval);
-            this.disableBoardInputs();
-            this.hideNumpad();
             this.showMessage('❌ Limite de erros atingido! Jogo encerrado.', 'error');
         }
     }
@@ -704,17 +783,20 @@ class Sudoku {
      * Atualizar UI (timer, dificuldade, erros)
      */
     updateUI() {
+        // Atualizar timer
         const minutes = Math.floor(this.timeElapsed / 60);
         const seconds = this.timeElapsed % 60;
         this.timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         
+        // Atualizar dificuldade
         const difficultyMap = {
             easy: 'Fácil',
             medium: 'Médio',
             hard: 'Difícil'
         };
-        this.difficultyElement.textContent = difficultyMap[this.difficulty] || this.difficulty;
+        this.difficultyElement.textContent = difficultyMap[this.difficulty];
         
+        // Atualizar erros
         this.errorsElement.textContent = `${this.errorCount}/${this.maxErrors}`;
     }
 
@@ -725,6 +807,7 @@ class Sudoku {
         this.messageElement.textContent = text;
         this.messageElement.className = `message ${type}`;
         
+        // Remover mensagem após 4 segundos
         setTimeout(() => {
             this.messageElement.className = 'message';
         }, 4000);
