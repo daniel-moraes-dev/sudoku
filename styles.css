@@ -39,6 +39,7 @@ body {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -343,8 +344,11 @@ body {
 }
 
 @media (min-width: 769px) {
+
     /* Desktop: esconder numpad por padrão (tem teclado físico) */
-    .numpad-section { display: none; }
+    .numpad-section {
+        display: none;
+    }
 }
 
 /* ==========================================
@@ -484,10 +488,14 @@ body {
 }
 
 @keyframes fadeInOut {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0;
     }
-    10%, 90% {
+
+    10%,
+    90% {
         opacity: 1;
     }
 }
@@ -631,4 +639,12 @@ details summary:hover {
         background: #0f3460;
         color: #fff;
     } */
+}
+
+/* RESPONSIVIDADE DO PAINEL DE NÚMEROS */
+@media (max-width: 480px) {
+    .numbers-panel {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 6px !important;
+    }
 }
