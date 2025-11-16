@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sudoku Game - Um jogo de Sudoku completo e funcional">
+    <title>Sudoku Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Container principal do jogo -->
+    <div class="container">
+        <!-- Cabeçalho -->
+        <header class="header">
+            <h1>SUDOKU</h1>
+            <p class="subtitle">Desafie sua lógica</p>
+        </header>
+
+        <!-- Seção de informações (timer, dificuldade, pontuação) -->
+        <section class="info-section">
+            <div class="info-item">
+                <span class="info-label">Tempo:</span>
+                <span class="info-value" id="timer">00:00</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Dificuldade:</span>
+                <span class="info-value" id="difficulty">Fácil</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Erros:</span>
+                <span class="info-value" id="errors">0</span>
+            </div>
+        </section>
+
+        <!-- Tabuleiro do Sudoku -->
+        <section class="board-section">
+            <div class="sudoku-board" id="sudokuBoard">
+                <!-- As células serão preenchidas pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- Painel de Números 1-9 -->
+        <section class="numbers-section">
+            <div class="numbers-label">Números Disponíveis:</div>
+            <div class="numbers-panel" id="numbersPanel">
+                <!-- Os números serão preenchidos pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- Numpad visual (mobile / touch) -->
+        <section class="numpad-section" id="numpadSection" aria-hidden="true">
+            <div class="numpad" id="numpad">
+                <div class="numpad-row">
+                    <button class="numpad-btn" data-val="1">1</button>
+                    <button class="numpad-btn" data-val="2">2</button>
+                    <button class="numpad-btn" data-val="3">3</button>
+                </div>
+                <div class="numpad-row">
+                    <button class="numpad-btn" data-val="4">4</button>
+                    <button class="numpad-btn" data-val="5">5</button>
+                    <button class="numpad-btn" data-val="6">6</button>
+                </div>
+                <div class="numpad-row">
+                    <button class="numpad-btn" data-val="7">7</button>
+                    <button class="numpad-btn" data-val="8">8</button>
+                    <button class="numpad-btn" data-val="9">9</button>
+                </div>
+                <div class="numpad-row">
+                    <button class="numpad-btn action" data-val="clear">Limpar</button>
+                    <button class="numpad-btn action" data-val="0">0</button>
+                    <button class="numpad-btn action" data-val="back">←</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controles -->
+        <section class="controls-section">
+            <div class="controls-group">
+                <label for="difficultySelect">Nível de Dificuldade:</label>
+                <select id="difficultySelect" class="difficulty-select">
+                    <option value="easy">Fácil (40 células vazias)</option>
+                    <option value="medium" selected>Médio (50 células vazias)</option>
+                    <option value="hard">Difícil (60 células vazias)</option>
+                </select>
+            </div>
+
+            <div class="controls-buttons">
+                <button class="btn btn-primary" id="newGameBtn">Novo Jogo</button>
+                <button class="btn btn-secondary" id="solveBtn">Resolver</button>
+                <button class="btn btn-secondary" id="resetBtn">Reiniciar</button>
+                <button class="btn btn-secondary" id="clearBtn">Limpar</button>
+            </div>
+        </section>
+
+        <!-- Mensagens de feedback -->
+        <section class="feedback-section">
+            <div class="message" id="message"></div>
+        </section>
+    </div>
+
+    <!-- Instruções -->
+    <footer class="footer">
+        <details>
+            <summary>📖 Como Jogar</summary>
+            <div class="instructions">
+                <p>Preencha o tabuleiro 9x9 com números de 1 a 9, seguindo as regras:</p>
+                <ul>
+                    <li>Cada linha deve conter os números 1-9 uma única vez</li>
+                    <li>Cada coluna deve conter os números 1-9 uma única vez</li>
+                    <li>Cada bloco 3x3 deve conter os números 1-9 uma única vez</li>
+                </ul>
+                <p>A validação acontece em tempo real. Números inválidos aparecem em vermelho!</p>
+            </div>
+        </details>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

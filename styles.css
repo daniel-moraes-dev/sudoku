@@ -1,0 +1,634 @@
+/* ==========================================
+   RESETANDO ESTILOS PADRÃO
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+/* ==========================================
+   CONTAINER PRINCIPAL
+   ========================================== */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   CABEÇALHO
+   ========================================== */
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+}
+
+.header h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #667eea;
+    letter-spacing: 4px;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.header .subtitle {
+    font-size: 14px;
+    color: #999;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+/* ==========================================
+   SEÇÃO DE INFORMAÇÕES
+   ========================================== */
+
+.info-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.info-item {
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    background: white;
+    border: 1px solid #e0e0e0;
+}
+
+.info-label {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.info-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #667eea;
+}
+
+/* ==========================================
+   TABULEIRO SUDOKU
+   ========================================== */
+
+.board-section {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 0;
+    border: 3px solid #333;
+    background: white;
+    aspect-ratio: 1;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Estilo das células */
+.sudoku-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Bordas mais grossas entre blocos 3x3 */
+.sudoku-cell:nth-child(3n) {
+    border-right: 2px solid #333;
+}
+
+.sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
+.sudoku-cell:nth-child(n + 73):nth-child(-n + 81) {
+    border-bottom: 2px solid #333;
+}
+
+/* Remover bordas extras */
+.sudoku-cell:nth-child(27),
+.sudoku-cell:nth-child(54) {
+    border-right: 2px solid #333;
+}
+
+.sudoku-cell:nth-child(81) {
+    border-right: 2px solid #333;
+    border-bottom: 2px solid #333;
+}
+
+/* Input das células */
+.sudoku-cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    background: transparent;
+    color: #333;
+    padding: 0;
+}
+
+.sudoku-cell input:focus {
+    outline: none;
+    background-color: #f0f0f0;
+    box-shadow: inset 0 0 0 2px #667eea;
+}
+
+/* Remover setas (spinners) dos inputs number nos navegadores */
+.sudoku-cell input::-webkit-outer-spin-button,
+.sudoku-cell input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.sudoku-cell input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+/* Garantir que o número fique centralizado (reforço) */
+.sudoku-cell input {
+    text-align: center;
+}
+
+/* Célula bloqueada (pré-preenchida) */
+.sudoku-cell.locked input {
+    color: #000;
+    font-weight: 700;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.sudoku-cell.locked input:focus {
+    background-color: #f0f0f0;
+    box-shadow: inset 0 0 0 2px #ddd;
+}
+
+/* Célula selecionada */
+.sudoku-cell.selected {
+    background-color: #e3f2fd;
+}
+
+.sudoku-cell.selected input {
+    background-color: #e3f2fd;
+}
+
+/* Célula com erro */
+.sudoku-cell.error input {
+    color: #d32f2f;
+    background-color: #ffebee;
+}
+
+/* Célula válida */
+.sudoku-cell.valid input {
+    color: #388e3c;
+}
+
+/* Células na mesma linha, coluna ou bloco */
+.sudoku-cell.highlight {
+    background-color: #fff9c4;
+}
+
+/* ==========================================
+   PAINEL DE NÚMEROS 1-9
+   ========================================== */
+
+.numbers-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.numbers-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.numbers-panel {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 8px;
+}
+
+.number-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    cursor: default;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.number-item:hover:not(.completed) {
+    background: #e3f2fd;
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+.number-item.completed {
+    background: #c8e6c9;
+    color: #2e7d32;
+    border-color: #388e3c;
+    opacity: 0.6;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   NUMPAD VISUAL (MOBILE / TOUCH)
+   ========================================== */
+
+.numpad-section {
+    margin-top: 12px;
+}
+
+.numpad {
+    display: grid;
+    gap: 8px;
+}
+
+.numpad-row {
+    display: flex;
+    gap: 8px;
+}
+
+.numpad-btn {
+    flex: 1 1 0;
+    padding: 12px 6px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.numpad-btn.action {
+    background: #f0f0f0;
+}
+
+.numpad-btn:hover {
+    background: #e8f0ff;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+@media (min-width: 769px) {
+    /* Desktop: esconder numpad por padrão (tem teclado físico) */
+    .numpad-section { display: none; }
+}
+
+/* ==========================================
+   SEÇÃO DE CONTROLES
+   ========================================== */
+
+.controls-section {
+    margin-bottom: 20px;
+}
+
+.controls-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    gap: 8px;
+}
+
+.controls-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.difficulty-select {
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
+
+.difficulty-select:hover {
+    border-color: #667eea;
+}
+
+.difficulty-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.controls-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* ==========================================
+   BOTÕES
+   ========================================== */
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    grid-column: 1 / -1;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(102, 126, 234, 0.2);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e8e8e8;
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.btn-secondary:active {
+    background: #ddd;
+}
+
+/* ==========================================
+   SEÇÃO DE FEEDBACK
+   ========================================== */
+
+.feedback-section {
+    min-height: 40px;
+    margin-bottom: 15px;
+}
+
+.message {
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    animation: fadeInOut 4s ease-in-out;
+    display: none;
+}
+
+.message.success {
+    background: #c8e6c9;
+    color: #2e7d32;
+    display: block;
+    border-left: 4px solid #388e3c;
+}
+
+.message.error {
+    background: #ffcdd2;
+    color: #c62828;
+    display: block;
+    border-left: 4px solid #d32f2f;
+}
+
+.message.warning {
+    background: #fff9c4;
+    color: #f57f17;
+    display: block;
+    border-left: 4px solid #fbc02d;
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+}
+
+/* ==========================================
+   FOOTER / INSTRUÇÕES
+   ========================================== */
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+details {
+    cursor: pointer;
+}
+
+details summary {
+    font-size: 14px;
+    font-weight: 600;
+    color: #667eea;
+    padding: 10px;
+    user-select: none;
+}
+
+details summary:hover {
+    color: #764ba2;
+}
+
+.instructions {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #666;
+}
+
+.instructions p {
+    margin-bottom: 10px;
+}
+
+.instructions ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.instructions li {
+    margin-bottom: 5px;
+}
+
+/* ==========================================
+   RESPONSIVIDADE PARA MOBILE
+   ========================================== */
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+    }
+
+    .header h1 {
+        font-size: 36px;
+        letter-spacing: 2px;
+    }
+
+    .info-section {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .sudoku-board {
+        max-width: 100%;
+    }
+
+    .controls-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        grid-column: auto;
+    }
+
+    .sudoku-cell {
+        font-size: 16px;
+    }
+
+    .sudoku-cell input {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        border-radius: 8px;
+    }
+
+    .header h1 {
+        font-size: 40px;
+    }
+}
+
+/* ==========================================
+   PRINT STYLES (para imprimir tabuleiro)
+   ========================================== */
+
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+    }
+
+    .controls-section,
+    .feedback-section,
+    .footer {
+        display: none;
+    }
+}
+
+/* ==========================================
+   DARK MODE (opcional, future enhancement)
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Descomente para adicionar suporte a dark mode */
+    /* body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .container {
+        background: #0f3460;
+        color: #fff;
+    } */
+}

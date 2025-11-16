@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Local - Sudoku Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border-left: 4px solid #ddd;
+        }
+        .test-item.success {
+            border-left-color: #388e3c;
+            background: #f1f8e9;
+        }
+        .test-item.warning {
+            border-left-color: #fbc02d;
+            background: #fffde7;
+        }
+        .test-item h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        .test-item p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .test-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .test-link:hover {
+            background: #764ba2;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste do Sudoku Game - Checklist</h1>
+        
+        <div class="test-item success">
+            <h3>✅ Verificações Implementadas</h3>
+            <p>✓ <strong>Geração de Puzzle:</strong> Gera corretamente apenas números iniciais (sem preencher tudo)</p>
+            <p>✓ <strong>Painel de Números 1-9:</strong> Mostra dígitos clicáveis abaixo do tabuleiro</p>
+            <p>✓ <strong>Números Completos:</strong> Quando um número atinge 9 ocorrências, fica marcado (verde com risco)</p>
+            <p>✓ <strong>Entrada Múltipla:</strong> Teclado (1-9), clique no painel 1-9, ou numpad visual (mobile)</p>
+            <p>✓ <strong>Numpad Visual:</strong> Teclado visual aparece automaticamente em dispositivos móveis/touch</p>
+            <p>✓ <strong>Salva Progresso:</strong> localStorage salva automaticamente por puzzle</p>
+            <p>✓ <strong>Restaura Progresso:</strong> Ao gerar o mesmo puzzle, progresso anterior é recuperado</p>
+            <p>✓ <strong>Sem Spinners:</strong> Inputs type="text" com inputmode="numeric" (sem setas/spinners)</p>
+            <p>✓ <strong>Validação em Tempo Real:</strong> Funciona com bloqueio de paste inválido</p>
+            <p>✓ <strong>Sem Erros de Sintaxe:</strong> HTML, CSS e JS validados</p>
+        </div>
+
+        <div class="test-item warning">
+            <h3>🧪 O Que Você Deve Testar</h3>
+            
+            <p><strong>1. Verificar Células Vazias:</strong></p>
+            <ul>
+                <li>Abra o jogo</li>
+                <li>Veja se existem células vazias para preencher</li>
+                <li>Não deve estar preenchido 100%</li>
+            </ul>
+            
+            <p><strong>2. Testar Múltiplas Formas de Entrada:</strong></p>
+            <ul>
+                <li><strong>Teclado:</strong> Digite 1-9 em uma célula (sem setas/spinners visíveis)</li>
+                <li><strong>Painel 1-9:</strong> Clique em um número do painel para inseri-lo</li>
+                <li><strong>Numpad Visual:</strong> Em mobile, veja o numpad aparecer ao focar célula</li>
+            </ul>
+            
+            <p><strong>3. Testar Painel de Números:</strong></p>
+            <ul>
+                <li>Veja os números 1-9 abaixo do tabuleiro (clicáveis)</li>
+                <li>Preencha o puzzle preenchendo cada número 9 vezes</li>
+                <li>Conforme completar cada número, ele deve ficar verde/marcado</li>
+            </ul>
+            
+            <p><strong>4. Diferentes Dificuldades:</strong></p>
+            <ul>
+                <li>Teste "Fácil" (40 vazias)</li>
+                <li>Teste "Médio" (50 vazias) - padrão</li>
+                <li>Teste "Difícil" (60 vazias)</li>
+            </ul>
+            
+            <p><strong>5. Botões:</strong></p>
+            <ul>
+                <li>"Novo Jogo" - gera novo puzzle com dificuldade selecionada</li>
+                <li>"Resolver" - preenche tudo com a solução</li>
+                <li>"Reiniciar" - limpa apenas seu progresso (sem gerar novo)</li>
+                <li>"Limpar" - alias para novo jogo</li>
+            </ul>
+            
+            <p><strong>6. Progresso Salvo:</strong></p>
+            <ul>
+                <li>Comece a preencher o puzzle</li>
+                <li>Recarregue a página (F5)</li>
+                <li>Seu progresso deve ser restaurado automaticamente</li>
+                <li>Timer e contador de erros também são restaurados</li>
+            </ul>
+            
+            <p><strong>7. Validação:</strong></p>
+            <ul>
+                <li>Número duplicado na linha = vermelho + erro</li>
+                <li>Número duplicado na coluna = vermelho + erro</li>
+                <li>Número duplicado no bloco 3x3 = vermelho + erro</li>
+                <li>Cole conteúdo inválido = bloqueado (não entra)</li>
+                <li>Número válido = verde</li>
+            </ul>
+            
+            <p><strong>8. Mobile (Responsividade):</strong></p>
+            <ul>
+                <li>Abra em smartphone ou use F12 > Toggle device toolbar</li>
+                <li>Numpad visual deve aparecer ao focar célula</li>
+                <li>Botões devem estar acessíveis</li>
+                <li>Layout se adapta adequadamente</li>
+            </ul>
+            
+            <p><strong>9. Destaque e Feedback:</strong></p>
+            <ul>
+                <li>Clique em uma célula vazia</li>
+                <li>Veja sua linha, coluna e bloco 3x3 destacados</li>
+                <li>Números inválidos aparecem brevemente em vermelho</li>
+                <li>Mensagens de sucesso/erro aparecem no topo</li>
+            </ul>
+        </div>
+
+        <div class="test-item">
+            <h3>📝 Como Usar o Jogo</h3>
+            <p><strong>Opção 1 - Abrir Direto:</strong></p>
+            <code>Clique no botão "Jogar Sudoku" abaixo</code>
+            
+            <p><strong>Opção 2 - Terminal (com servidor):</strong></p>
+            <code>python3 -m http.server 8000</code><br/>
+            <code>Depois acesse: http://localhost:8000</code>
+            
+            <p><strong>Opção 3 - Modo Development:</strong></p>
+            <code>Use F12 no navegador para abrir DevTools e verificar console.log</code>
+        </div>
+
+        <div class="test-item">
+            <h3>🐛 Se Algo Não Funcionar</h3>
+            <p>1. <strong>Limpe o cache:</strong> Ctrl+Shift+Delete (ou Cmd+Shift+Delete no Mac)</p>
+            <p>2. <strong>Recarregue:</strong> Ctrl+R (ou Cmd+R no Mac)</p>
+            <p>3. <strong>Abra o Console:</strong> F12 e procure por erros em vermelho</p>
+            <p>4. <strong>Teste em outro navegador:</strong> Chrome, Firefox, Safari</p>
+        </div>
+
+        <a href="index.html" class="test-link">🎮 Jogar Sudoku</a>
+
+        <div class="test-item" style="margin-top: 30px;">
+            <h3>📋 Resumo de Todos os Recursos Implementados</h3>
+            
+            <p><strong>🎮 script.js (Lógica Principal):</strong></p>
+            <ul>
+                <li><code>generateBoard()</code> - Cria puzzle com backtracking</li>
+                <li><code>solvedBoard</code>, <code>puzzleBoard</code>, <code>initialBoard</code> - 3 estados separados</li>
+                <li><code>renderBoard()</code> - Tipo "text" com inputmode="numeric" (sem spinners)</li>
+                <li><code>renderNumbersPanel()</code> - Painel 1-9 clicável</li>
+                <li><code>updateNumbersPanel()</code> - Marca números completados (verde)</li>
+                <li><code>countNumberInBoard()</code> - Conta ocorrências de cada número</li>
+                <li><code>onCellChange(row, col)</code> - Validação em tempo real + save automático</li>
+                <li><code>onCellFocus(row, col)</code> - Destaca linha/coluna/bloco + abre numpad em mobile</li>
+                <li><code>onNumberClick(num)</code> - Insere número do painel clicado</li>
+                <li><code>getPuzzleKey()</code> - Gera chave única para localStorage baseada no puzzle</li>
+                <li><code>saveProgress()</code> - Salva estado do jogo em localStorage</li>
+                <li><code>loadProgress()</code> - Carrega estado salvo de localStorage</li>
+                <li><code>attemptRestoreProgress()</code> - Auto-restaura ao iniciar novo jogo</li>
+                <li><code>isMobile()</code> - Detecta se é dispositivo mobile</li>
+                <li><code>showNumpad()/hideNumpad()</code> - Toggle numpad visual para mobile</li>
+                <li>Handlers para Numpad (1-9, Clear, Backspace)</li>
+            </ul>
+            
+            <p><strong>🏗️ index.html (Estrutura):</strong></p>
+            <ul>
+                <li><code>&lt;div id="sudokuBoard"&gt;</code> - 81 inputs type="text"</li>
+                <li><code>&lt;div id="numbersPanel"&gt;</code> - 9 items clicáveis (1-9)</li>
+                <li><code>&lt;div id="numpadSection"&gt;</code> - Numpad visual (1-9, Clear, 0, Backspace)</li>
+                <li>Info section: Timer (00:00), Dificuldade, Contador de Erros</li>
+                <li>Controls: Select dificuldade + 4 botões (Novo, Resolver, Reiniciar, Limpar)</li>
+                <li>Feedback: <code>&lt;div id="message"&gt;</code> para notificações</li>
+            </ul>
+            
+            <p><strong>🎨 styles.css (Estilos & Responsividade):</strong></p>
+            <ul>
+                <li><code>.sudoku-board</code> - Grid 9x9, aspect-ratio 1:1</li>
+                <li><code>.sudoku-cell</code> - Células com borders 3x3</li>
+                <li><code>.sudoku-cell input</code> - Sem spinners (-webkit, -moz)</li>
+                <li><code>.numbers-section/.numbers-panel</code> - Painel com grid 9 colunas</li>
+                <li><code>.number-item.completed</code> - Verde com strikethrough</li>
+                <li><code>.numpad-section</code> - Hidden em desktop, visible em mobile</li>
+                <li><code>.numpad/.numpad-btn</code> - Grid layout com botões estilizados</li>
+                <li>Estados: <code>.locked</code>, <code>.error</code>, <code>.valid</code>, <code>.highlight</code></li>
+                <li>Animações: <code>slideDown</code> (0.5s), <code>fadeInOut</code> (4s)</li>
+                <li>Breakpoints: 480px (mobile), 768px (tablet), desktop</li>
+            </ul>
+            
+            <p><strong>💾 Persistência & Mobile:</strong></p>
+            <ul>
+                <li>localStorage por puzzle (chave única baseada em initialBoard)</li>
+                <li>Auto-salva após cada movimento</li>
+                <li>Auto-restaura ao recarregar página</li>
+                <li>Numpad visual em dispositivos mobile</li>
+                <li>Clique em números do painel para inserir</li>
+                <li>Teclado, painel e numpad como métodos de entrada</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
