@@ -641,10 +641,31 @@ details summary:hover {
     } */
 }
 
-/* RESPONSIVIDADE DO PAINEL DE NÚMEROS */
+/* FIX RESPONSIVO PARA O PAINEL DE NÚMEROS */
 @media (max-width: 480px) {
+
+    /* Reduz padding do container para caber melhor */
+    .numbers-section {
+        padding: 8px !important;
+    }
+
+    /* Ajusta o título do painel */
+    .numbers-label {
+        font-size: 11px !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* Agora sim aplica o grid responsivo */
     .numbers-panel {
         grid-template-columns: repeat(5, 1fr) !important;
         gap: 6px !important;
     }
+
+    /* Ajusta tamanho dos botões */
+    .number-item {
+        padding: 8px 0 !important;
+        font-size: 14px !important;
+        border-radius: 5px !important;
+    }
 }
+/* RESPONSIVIDADE DO PAINEL DE NÚMEROS */
